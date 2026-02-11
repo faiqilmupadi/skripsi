@@ -10,3 +10,9 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   await query('UPDATE users SET username=?, email=?, role=?, lastChange=NOW() WHERE userId=?', [parsed.data.username, parsed.data.email, parsed.data.role, params.id]);
   return NextResponse.json({ ok: true });
 }
+
+export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+  const auth = requireRole(['kepala_gudang']); if ('error' in auth) return auth.error;
+  await query('DELETE FROM users WHERE userId=?', [params.id]);
+  return NextResponse.json({ ok: true });
+}

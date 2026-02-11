@@ -9,11 +9,11 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ message: parsed.error.flatten() }, { status: 400 });
   const { username, password } = parsed.data;
 
-  const users = await query<{ userId: number; username: string; role: 'kepala_gudang' | 'admin_gudang'; password: string; status?: string }>(
-    'SELECT userId, username, role, password, status FROM users WHERE username=? LIMIT 1', [username]
+  const users = await query<{ userId: number; username: string; role: 'kepala_gudang' | 'admin_gudang'; password: string }>(
+    'SELECT userId, username, role, password FROM users WHERE username=? OR email=? LIMIT 1', [username, username]
   );
   const user = users[0];
-  if (!user || (user.status && user.status !== 'active')) return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
+  if (!user) return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
 
   const isHashed = user.password.startsWith('$2');
   const valid = isHashed ? await bcrypt.compare(password, user.password) : password === user.password;
