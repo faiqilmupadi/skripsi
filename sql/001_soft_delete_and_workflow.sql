@@ -1,4 +1,3 @@
-ALTER TABLE users ADD COLUMN status ENUM('active','inactive') DEFAULT 'active';
 ALTER TABLE material_master ADD COLUMN isActive TINYINT(1) DEFAULT 1;
 
 CREATE TABLE IF NOT EXISTS restock_requests (
